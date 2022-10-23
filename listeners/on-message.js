@@ -11,18 +11,10 @@ const superagent = require("../superagent");
 const config = require("../config");
 const { colorRGBtoHex, colorHex } = require("../utils");
 
-const allKeywords = `回复序号或关键字获取对应服务
-1.技术交流群
-2.毒鸡汤
-3.神回复(略微开车)
-4.英语一句话
-转小写(例：转小写PEANUT)
-转大写(例：转大写peanut)
-转rgb(例：转rgb#cccccc)
-转16进制(例：转16进制rgb(255,255,255))
-天气 城市名(例：天气 西安)
-全国肺炎(实时肺炎数据)
-省份/自治区 肺炎(例：河南肺炎)`;
+const allKeywords = `哇～好久不见呀～我是仙女的小助理～仙女现在在忙～有什么小助理可以帮到您的的吗
+1：购买水果
+2：进入福利群
+3：紧急联系仙女`;
 /**
  * sleep
  * @param {*} ms
@@ -40,16 +32,13 @@ async function onMessage(msg, bot) {
     //处理群消息
     await onWebRoomMessage(msg, bot);
   } else {
-    return
+    //处理用户消息  用户消息暂时只处理文本消息。后续考虑其他
+    console.log("bot.Message", bot.Message);
+    const isText = msg.type() === bot.Message.Type.Text;
+    if (isText) {
+      await onPeopleMessage(msg, bot);
+    }
   }
-  // else {
-  //   //处理用户消息  用户消息暂时只处理文本消息。后续考虑其他
-  //   console.log("bot.Message", bot.Message);
-  //   const isText = msg.type() === bot.Message.Type.Text;
-  //   if (isText) {
-  //     await onPeopleMessage(msg, bot);
-  //   }
-  // }
 }
 /**
  * 处理用户消息
@@ -70,7 +59,7 @@ async function onPeopleMessage(msg, bot) {
     await msg.say("我是秦始皇，打钱!!!!!");
     await delay(200);
     await msg.say(fileBox);
-  } else if (content === "技术交流群" || parseInt(content) === 1) {
+  } else if (content === "原味熊果粉9群" || parseInt(content) === 2) {
     const webRoom = await bot.Room.find({
       topic: config.WEBROOM
     });
@@ -82,22 +71,18 @@ async function onPeopleMessage(msg, bot) {
         console.error(e);
       }
     }
-  } else if (content === "毒鸡汤" || parseInt(content) === 2) {
-    let soup = await superagent.getSoup();
+  } else if (content === "购买水果" || parseInt(content) === 1) {
+    const fileBox = FileBox.fromFile(path.join(__dirname, "../imgs/shoping.png"))
     await delay(200);
-    await msg.say(soup);
-  } else if (content === "神回复" || parseInt(content) === 3) {
-    const { title, content } = await superagent.getGodReply();
+    await msg.say(fileBox);
+  } else if (content === "紧急联系仙女" || parseInt(content) === 3) {
     await delay(200);
-    await msg.say(`标题：${title}<br><br>神回复：${content}`);
-  } else if (content === "英语一句话" || parseInt(content) === 4) {
-    const { en, zh } = await superagent.getEnglishOne();
-    await delay(200);
-    await msg.say(`en：${en}<br><br>zh：${zh}`);
+    await msg.say('13263205521');
   } else {
     const noUtils = await onUtilsMessage(msg, bot);
     if (noUtils) {
       await delay(200);
+      // console.log(bot.Room)
       await msg.say(allKeywords);
     }
   }
@@ -128,6 +113,14 @@ async function onWebRoomMessage(msg, bot) {
  */
 async function onUtilsMessage(msg, bot) {
   const contact = msg.talker(); // 发消息人
+  if (contact.payload.name == config.MYSELF) {
+    const room = msg.room()
+    console.log('room', room)
+    if (room && msg.text().includes('修改群名：')) {
+      console.log(msg.text().replace('修改群名：', ''))
+      await room.topic(msg.text().replace('修改群名：', ''))
+    }
+  }
   const isText = msg.type() === bot.Message.Type.Text;
   if (isText) {
     let content = msg.text().trim(); // 消息内容
