@@ -7,6 +7,6 @@
  */
 module.exports = {
   IGNORE: ["www.iiter.cn"], //忽略某个用户的消息，填写昵称即可
-  WEBROOM: "原味熊果粉9群", //要管理的群名称
+  WEBROOM: "仙女驻凡水果福利9群", //要管理的群名称
   MYSELF: "图灵" //大号的昵称
 };

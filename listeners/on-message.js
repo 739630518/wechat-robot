@@ -59,7 +59,7 @@ async function onPeopleMessage(msg, bot) {
     await msg.say("我是秦始皇，打钱!!!!!");
     await delay(200);
     await msg.say(fileBox);
-  } else if (content === "原味熊果粉9群" || parseInt(content) === 2) {
+  } else if (content === "进入福利群" || parseInt(content) === 2) {
     const webRoom = await bot.Room.find({
       topic: config.WEBROOM
     });
@@ -81,9 +81,13 @@ async function onPeopleMessage(msg, bot) {
   } else {
     const noUtils = await onUtilsMessage(msg, bot);
     if (noUtils) {
-      await delay(200);
-      // console.log(bot.Room)
-      await msg.say(allKeywords);
+      try {
+        await delay(200);
+        // console.log(bot.Room)
+        await msg.say(allKeywords);
+      } catch (error) {
+        console.log(error)
+      }
     }
   }
 }
