@@ -11,7 +11,7 @@ const superagent = require("../superagent");
 const config = require("../config");
 const { colorRGBtoHex, colorHex } = require("../utils");
 
-const allKeywords = `哇～好久不见呀～我是仙女的小助理～仙女现在在忙～有什么小助理可以帮到您的的吗
+const allKeywords = `哇～好久不见呀～我是仙女的小助理～仙女现在在忙～有什么小助理可以帮到您的吗
 1：购买水果
 2：进入福利群
 3：紧急联系仙女`;
@@ -63,12 +63,17 @@ async function onPeopleMessage(msg, bot) {
     const webRoom = await bot.Room.find({
       topic: config.WEBROOM
     });
-    if (webRoom) {
-      try {
-        await delay(200);
-        await webRoom.add(contact);
-      } catch (e) {
-        console.error(e);
+    if (webRoom && contact) {
+      if (await webRoom.has(contact)) {
+        await delay(200)
+        await msg.say('你已经在群里了哦')
+      } else {
+        try {
+          await delay(200);
+          await webRoom.add(contact);
+        } catch (e) {
+          console.error(e);
+        }
       }
     }
   } else if (content === "购买水果" || parseInt(content) === 1) {
